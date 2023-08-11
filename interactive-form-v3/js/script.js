@@ -174,6 +174,10 @@ paymentOption.addEventListener('change', () => {
 
 /**
  * used .trmi() to remove withe spaces
+ * then with an if statement I checked if the input is empty
+ *      return false and show the hint
+ *  else
+ *      hide the hint and return true
  */
 function validateName (nameElement, hintElement){
     const nameInput = nameElement.value.trim();
@@ -185,14 +189,167 @@ function validateName (nameElement, hintElement){
     return true;
 }
 
+
+/**
+ * 
+ * created a variable to hold the expression to format the email
+ * then with an if statement I checked if the input is not equal to the format 
+ *      return false and show the hint 
+ *  else
+ *      hid ehint and return true 
+ */
+function validateEmail (emailElement, emailHint){
+    const emailInput =  /^[^@]+@[^@.]+\.[a-z]+$/i.test(emailElement.value);
+    if (!emailInput){
+        emailHint.style.display = 'block';
+        return false;
+    }
+    emailHint.style.display = 'none';
+    return true;
+}
+
+/**
+ * Activities
+ * 
+ * I created a function that takes a selectActivity and a hint
+ * then from the selectActivity i used querySelectorAll to get all the inputs
+ * with a for loop i checked if each one has been checked, if one has
+ *      then hide the hint and return true
+ * the function returns false and shows the hint
+ */
+
+function validateActivities(selectActivity, activityHint){
+    const checkboxes = selectActivity.querySelectorAll('input[type="checkbox"]');
+    
+    for (let i = 0; i < checkboxes.length; i++){
+        if (checkboxes[i].checked){
+            activityHint.style.display = 'none';
+            return true;
+        }
+    }
+    activityHint.style.display = 'block';
+    return false;
+}
+
+/**
+ * Payment
+ * 
+ * I made a function that takes an input and the hint 
+ * it formats the card input to digits from 0 to 9 and i use the test method passing the value of the input
+ * then it checkes if the inout is correct it goes to another check
+ * if the length of the inout is more or equal to 13 and less or equal to 16
+ *      hide the hint and return true
+ *  else show the hint and return false
+ * 
+ *  Did the same thing for card, zipcode and cvv
+ * Basically i just copied and pasted changing the variables
+ *      
+ */
+
+function cardValidation(creditCardInput, creditCardHint){
+
+    const formatedCard = /^[0-9]+$/.test(creditCardInput.value); 
+
+    if (formatedCard){
+        if(creditCardInput.value.length >= 13 && creditCardInput.value.length <= 16){
+            creditCardHint.style.display = 'none';
+            return true;
+        }else{
+            creditCardHint.style.display = 'block';
+            return false;
+        }
+        
+    }else{
+        creditCardHint.style.display = 'block';
+        return false;
+    }
+
+    
+}
+
+function zipcodeValidation(zipcodeInput, zipcodeHint){
+
+    const formatZipcode = /^[0-9]+$/.test(zipcodeInput.value); 
+
+    if (formatZipcode){
+        if(zipcodeInput.value.length === 5){
+            zipcodeHint.style.display = 'none';
+            return true;
+        }else{
+            zipcodeHint.style.display = 'block';
+            return false;
+        }
+        
+    }else{
+        zipcodeHint.style.display = 'block';
+        return false;
+    }
+
+    
+}
+
+function cvvValidation(cvvInput, cvvHint){
+
+    const cvvFormat = /^[0-9]+$/.test(cvvInput.value); 
+
+    if (cvvFormat){
+        if(cvvInput.value.length === 3){
+            cvvHint.style.display = 'none';
+            return true;
+        }else{
+            cvvHint.style.display = 'block';
+            return false;
+        }
+        
+    }else{
+        cvvHint.style.display = 'block';
+        return false;
+    }
+
+    
+}
+
 const form = document.querySelector('form');
 
 const nameElement = document.getElementById('name');
 const nameHintElement = document.getElementById('name-hint');
 
+const emailElement = document.getElementById('email');
+const emailHintElement = document.getElementById('email-hint');
+
+const activities = document.getElementById('activities-box');
+const activityHint = document.getElementById('activities-hint');
+
+const creditCardInput = document.getElementById('cc-num');
+const creditCardHint = document.getElementById('cc-hint');
+
+const zipcodeInput = document.getElementById('zip');
+const zipcodeHint = document.getElementById('zip-hint');
+
+const cvvInput = document.getElementById('cvv');
+const cvvHint = document.getElementById('cvv-hint');
+
 form.addEventListener('submit', (e) => {
     e.preventDefault();
 
     validateName(nameElement, nameHintElement);
+    validateEmail(emailElement, emailHintElement);
+    validateActivities(activities, activityHint);
+    cardValidation(creditCardInput, creditCardHint);
+    zipcodeValidation(zipcodeInput, zipcodeHint);
+    cvvValidation(cvvInput, cvvHint);
 })
+
+
+
+/**
+ * 8)
+ * Focus on Activity
+ * 
+ * 
+ */
+
+
+
+
 
