@@ -346,10 +346,36 @@ form.addEventListener('submit', (e) => {
  * 8)
  * Focus on Activity
  * 
+ * This was tricky but it works
+ * saved the activity checkboxes by selecting all the inputs in the dom of type checkboxes
+ * and the lables by getting the class activities label
  * 
+ * Looping through the checkboxes I added to each one 
+ * focus event listener and if it's focused then add the className focus
+ * blur event listener if the event triggeres it will remove the class name
+ * 
+ * credits: 
+ * https://developer.mozilla.org/en-US/docs/Web/API/Element/focus_event
+ * https://www.w3schools.com/howto/howto_js_remove_class.asp
+ * https://stackoverflow.com/questions/10908212/select-all-checkbox-by-javascript-or-console
+ * https://developer.mozilla.org/en-US/docs/Web/API/Element/blur_event
  */
 
 
+const checkboxesActivity = document.querySelectorAll('input[type="checkbox"]');
+const activityLabels = document.querySelectorAll('.activities label');
 
+//console.log(checkboxesActivity, activityLabels);
 
-
+for (let i = 0; i < checkboxesActivity.length; i++){
+    checkboxesActivity[i].addEventListener('focus', (e) => {
+        if(e){
+            activityLabels[i].className = 'focus';
+        }
+    })
+    checkboxesActivity[i].addEventListener('blur', (e) => {
+        if(e){
+            activityLabels[i].classList.remove('focus');
+        }
+    })
+}
