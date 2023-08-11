@@ -122,21 +122,10 @@ fieldsetActivity.addEventListener('change', (e) => {
     const isChecked = checkbox.checked;
 
     if (isChecked){
-        checkedActivities.push(dateAndTime);
-
-        for (const activity of checkboxes) {
-            if (activity !== checkbox && activity.getAttribute('data-day-and-time') === dateAndTime) {
-                activity.checked = false;
-            }
-        }
-
         totalCost = totalCost + checkboxDataCost;
     }else {
-        checkedActivities = checkedActivities.filter(item => item !== dateAndTime);
         totalCost = totalCost - checkboxDataCost;
     }
-
-    
     totalCostElem.textContent = `Total: $${totalCost}`;
 })
 
