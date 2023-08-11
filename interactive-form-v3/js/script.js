@@ -80,41 +80,62 @@ designOption.addEventListener('change', () => {
 
 
 /**
- * 5)
+ * 5) (plus extra credit)
  * I started by getting the field set of the activity section
- * then the total cost element
- * I then created a variable total cost and set it to 0
- * updated the text content of the lement total cost replacing the string 0 to the totalCost variable
+ * the total cost element and the checkboxes
  * 
- * I added an event listener to the fieldset 
- *      I then set the target to the checkbox
- *      and stored the data-cost attribute in a variable and used parseInt to make it an int
- *      I also created another variable called isChecked to store the checkbox check
- *      if it is checked add the value of data-cost to the totalCost
- *      else if is unchecked subtract from it
- *      I then updated the totalCostElem again with the new value
+ * made a totalCost variable that will hold the cost of all the activities 
+ * a checkedActivities array 
+ * set the totalCostElem text content to the total cost variable
+ * 
+ * adding an event listener for change
+ * checkboxDataCost will get the checkbox cost and make it an Integer
+ * the isChecked variable will check if the checkbox is actually checked
+ * 
+ * then the if statement will check the isChecked variable if it is
+ *      add the checkbox dateAndTime value to the array
+ *      then a for loop activity in checkboxes, if the activity is not the checkbox just checked, and the dateAndtime matches
+ *          this will uncheck the activity
+ *      update the total cost to the totalCost + the checkboxDataCost
+ *  else
+ *      I used a filter() method that compares for each item with dateAndTime
+ *      totalcost is updated it to totalcost - the dataCost
+ * 
+ * Then I return the totalCostElement again
  */
 
 
 const fieldsetActivity = document.getElementById('activities');
 const totalCostElem = document.getElementById('activities-cost');
+const checkboxes = fieldsetActivity.querySelectorAll('input[type="checkbox"]');
 
 let totalCost = 0;
-
+let checkedActivities = [];
 totalCostElem.textContent = `Total: $${totalCost}`;
 
 fieldsetActivity.addEventListener('change', (e) => {
 
     const checkbox = e.target;
     const checkboxDataCost = parseInt(checkbox.getAttribute('data-cost'));
+    const dateAndTime = checkbox.getAttribute('data-day-and-time');
 
     const isChecked = checkbox.checked;
 
     if (isChecked){
+        checkedActivities.push(dateAndTime);
+
+        for (const activity of checkboxes) {
+            if (activity !== checkbox && activity.getAttribute('data-day-and-time') === dateAndTime) {
+                activity.checked = false;
+            }
+        }
+
         totalCost = totalCost + checkboxDataCost;
-    }else if (!isChecked){
+    }else {
+        checkedActivities = checkedActivities.filter(item => item !== dateAndTime);
         totalCost = totalCost - checkboxDataCost;
     }
+
     
     totalCostElem.textContent = `Total: $${totalCost}`;
 })
@@ -179,12 +200,22 @@ paymentOption.addEventListener('change', () => {
  *  else
  *      hide the hint and return true
  */
-function validateName (nameElement, hintElement){
+
+/**
+ * 10)
+ * Visual Validation Errors
+ */
+
+
+
+function validateName (nameElement, hintElement, nameLabelError){
     const nameInput = nameElement.value.trim();
     if (nameInput === ''){
         hintElement.style.display = 'block';
+        nameLabelError.className = "not-valid";
         return false;
     }
+    nameLabelError.className = "valid";
     hintElement.style.display = 'none';
     return true;
 }
@@ -198,13 +229,15 @@ function validateName (nameElement, hintElement){
  *  else
  *      hid ehint and return true 
  */
-function validateEmail (emailElement, emailHint){
+function validateEmail (emailElement, emailHint, emailLabelError){
     const emailInput =  /^[^@]+@[^@.]+\.[a-z]+$/i.test(emailElement.value);
     if (!emailInput){
         emailHint.style.display = 'block';
+        emailLabelError.className = 'not-valid';
         return false;
     }
     emailHint.style.display = 'none';
+    emailLabelError.className = 'valid';
     return true;
 }
 
@@ -218,16 +251,18 @@ function validateEmail (emailElement, emailHint){
  * the function returns false and shows the hint
  */
 
-function validateActivities(selectActivity, activityHint){
+function validateActivities(selectActivity, activityHint, activitiesError){
     const checkboxes = selectActivity.querySelectorAll('input[type="checkbox"]');
     
     for (let i = 0; i < checkboxes.length; i++){
         if (checkboxes[i].checked){
             activityHint.style.display = 'none';
+            activitiesError.className = 'valid';
             return true;
         }
     }
     activityHint.style.display = 'block';
+    activitiesError.className = 'not-valid';
     return false;
 }
 
@@ -246,69 +281,79 @@ function validateActivities(selectActivity, activityHint){
  *      
  */
 
-function cardValidation(creditCardInput, creditCardHint){
+function cardValidation(creditCardInput, creditCardHint, creditCardLabelError){
 
     const formatedCard = /^[0-9]+$/.test(creditCardInput.value); 
 
     if (formatedCard){
         if(creditCardInput.value.length >= 13 && creditCardInput.value.length <= 16){
             creditCardHint.style.display = 'none';
+            creditCardLabelError.className = 'valid';
             return true;
         }else{
             creditCardHint.style.display = 'block';
+            creditCardLabelError.className = 'not-valid';
             return false;
         }
         
     }else{
         creditCardHint.style.display = 'block';
+        creditCardLabelError.className = 'not-valid';
         return false;
     }
 
     
 }
 
-function zipcodeValidation(zipcodeInput, zipcodeHint){
+function zipcodeValidation(zipcodeInput, zipcodeHint, zipcodeLabelError){
 
     const formatZipcode = /^[0-9]+$/.test(zipcodeInput.value); 
 
     if (formatZipcode){
         if(zipcodeInput.value.length === 5){
             zipcodeHint.style.display = 'none';
+            zipcodeLabelError.className = 'valid';
             return true;
         }else{
             zipcodeHint.style.display = 'block';
+            zipcodeLabelError.className = 'not-valid';
             return false;
         }
         
     }else{
         zipcodeHint.style.display = 'block';
+        zipcodeLabelError.className = 'not-valid';
         return false;
     }
 
     
 }
 
-function cvvValidation(cvvInput, cvvHint){
+function cvvValidation(cvvInput, cvvHint, cvvLabelError){
 
     const cvvFormat = /^[0-9]+$/.test(cvvInput.value); 
 
     if (cvvFormat){
         if(cvvInput.value.length === 3){
             cvvHint.style.display = 'none';
+            cvvLabelError.className = 'valid';
             return true;
         }else{
             cvvHint.style.display = 'block';
+            cvvLabelError.className = 'not-valid';
             return false;
         }
         
     }else{
         cvvHint.style.display = 'block';
+        cvvLabelError.className = 'not-valid';
         return false;
     }
 
     
 }
 
+//All the inputs and hints
 const form = document.querySelector('form');
 
 const nameElement = document.getElementById('name');
@@ -329,15 +374,23 @@ const zipcodeHint = document.getElementById('zip-hint');
 const cvvInput = document.getElementById('cvv');
 const cvvHint = document.getElementById('cvv-hint');
 
+//all the labels for errors
+const nameLabelError = nameInputField.parentNode;
+const emailLabelError = emailElement.parentNode;
+const activitiesError = document.getElementById('activities');
+const creditCardLabelError = creditCardInput.parentNode;
+const zipcodeLabelError = zipcodeInput.parentNode;
+const cvvLabelError = cvvInput.parentNode;
+
 form.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    validateName(nameElement, nameHintElement);
-    validateEmail(emailElement, emailHintElement);
-    validateActivities(activities, activityHint);
-    cardValidation(creditCardInput, creditCardHint);
-    zipcodeValidation(zipcodeInput, zipcodeHint);
-    cvvValidation(cvvInput, cvvHint);
+    validateName(nameElement, nameHintElement, nameLabelError);
+    validateEmail(emailElement, emailHintElement, emailLabelError);
+    validateActivities(activities, activityHint, activitiesError);
+    cardValidation(creditCardInput, creditCardHint, creditCardLabelError);
+    zipcodeValidation(zipcodeInput, zipcodeHint, zipcodeLabelError);
+    cvvValidation(cvvInput, cvvHint, cvvLabelError);
 })
 
 
@@ -379,3 +432,6 @@ for (let i = 0; i < checkboxesActivity.length; i++){
         }
     })
 }
+
+
+
