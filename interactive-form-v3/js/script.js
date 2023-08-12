@@ -85,23 +85,14 @@ designOption.addEventListener('change', () => {
  * the total cost element and the checkboxes
  * 
  * made a totalCost variable that will hold the cost of all the activities 
- * a checkedActivities array 
- * set the totalCostElem text content to the total cost variable
  * 
- * adding an event listener for change
- * checkboxDataCost will get the checkbox cost and make it an Integer
- * the isChecked variable will check if the checkbox is actually checked
- * 
- * then the if statement will check the isChecked variable if it is
- *      add the checkbox dateAndTime value to the array
- *      then a for loop activity in checkboxes, if the activity is not the checkbox just checked, and the dateAndtime matches
- *          this will uncheck the activity
- *      update the total cost to the totalCost + the checkboxDataCost
- *  else
- *      I used a filter() method that compares for each item with dateAndTime
- *      totalcost is updated it to totalcost - the dataCost
- * 
- * Then I return the totalCostElement again
+ * The listener listens for the 'change' event, which occurs when a checkbox's state changes (checked or unchecked)
+ * When a change event occurs, the event object contains information about the event. 
+ * The isChecked variable is used to determine whether the checkbox was checked or unchecked
+ * When a checkbox is checked, loop through all checkboxes using a for of loop
+ *  For each activity, if it has the same data-day-and-time value as the selected checkbox then it disables the other activity
+ * the opposite happend is a checkbox is unchecked, it will enable the other activity
+ * Then we update the total cost  
  */
 
 
@@ -114,20 +105,33 @@ let checkedActivities = [];
 totalCostElem.textContent = `Total: $${totalCost}`;
 
 fieldsetActivity.addEventListener('change', (e) => {
-
     const checkbox = e.target;
     const checkboxDataCost = parseInt(checkbox.getAttribute('data-cost'));
     const dateAndTime = checkbox.getAttribute('data-day-and-time');
-
     const isChecked = checkbox.checked;
 
-    if (isChecked){
+    if (isChecked) {
+        for (const activity of checkboxes) {
+            const activityDateAndTime = activity.getAttribute('data-day-and-time');
+            if (activity !== checkbox && activityDateAndTime === dateAndTime) {
+                activity.disabled = true;
+                activity.parentNode.classList.add('disabled');
+            }
+        }
         totalCost = totalCost + checkboxDataCost;
-    }else {
+    } else {
+        for (const activity of checkboxes) {
+            const activityDateAndTime = activity.getAttribute('data-day-and-time');
+            if (activity !== checkbox && activityDateAndTime === dateAndTime) {
+                activity.disabled = false;
+                activity.parentNode.classList.remove('disabled');
+            }
+        }
         totalCost = totalCost - checkboxDataCost;
     }
     totalCostElem.textContent = `Total: $${totalCost}`;
-})
+});
+
 
 
 /**
@@ -220,9 +224,16 @@ function validateName (nameElement, hintElement, nameLabelError){
  */
 function validateEmail (emailElement, emailHint, emailLabelError){
     const emailInput =  /^[^@]+@[^@.]+\.[a-z]+$/i.test(emailElement.value);
-    if (!emailInput){
+    if(emailElement.value === ''){
+        emailHint.textContent = "Email cannot be empty";
         emailHint.style.display = 'block';
         emailLabelError.className = 'not-valid';
+        return false;
+    }else if (!emailInput){
+        emailHint.textContent = "Email address must be formatted correctly";
+        emailHint.style.display = 'block';
+        emailLabelError.className = 'not-valid';
+        console.log(emailHint.textContent)
         return false;
     }
     emailHint.style.display = 'none';
@@ -382,7 +393,30 @@ form.addEventListener('submit', (e) => {
     cvvValidation(cvvInput, cvvHint, cvvLabelError);
 })
 
+/**
+ * (extra credit)
+ * I've added some event listeners for some inout to listen for keyup for real time event
+ */
 
+creditCardInput.addEventListener('keyup', () => {
+    cardValidation(creditCardInput, creditCardHint, creditCardLabelError);
+})
+
+nameElement.addEventListener('keyup', () => {
+    validateName(nameElement, nameHintElement, nameLabelError);
+})
+
+emailElement.addEventListener('keyup', () => {
+    validateEmail(emailElement, emailHintElement, emailLabelError);
+})
+
+zipcodeInput.addEventListener('keyup', () => {
+    zipcodeValidation(zipcodeInput, zipcodeHint, zipcodeLabelError);
+})
+
+cvvInput.addEventListener('keyup', () => {
+    cvvValidation(cvvInput, cvvHint, cvvLabelError);
+})
 
 /**
  * 8)
