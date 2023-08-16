@@ -54,10 +54,34 @@ const colorOption = document.getElementById('color');
 
 colorOption.disabled = true;
 
+
 designOption.addEventListener('change', () => {
 
     colorOption.disabled = false;
 
+    //New Way
+
+    for(let i = 0; i < colorOption.options.length; i++){
+        if(designOption.value === 'js puns'){
+            if(colorOption.options[i].getAttribute('data-theme') === 'js puns'){
+                colorOption.options[i].style.display = "";
+                colorOption.options[i].setAttribute('selected', 'selected');
+            }else{
+                colorOption.options[i].style.display = "none";
+            }
+        }else if (designOption.value === 'heart js'){
+            if(colorOption.options[i].getAttribute('data-theme') === 'heart js'){
+                colorOption.options[i].style.display = "";
+                colorOption.options[i].setAttribute('selected', 'selected');
+            }else{
+                colorOption.options[i].style.display = "none";
+            }
+        }
+    }
+
+    //Old way
+
+    /*
     if(designOption.value === 'js puns'){
         colorOption.options[1].setAttribute('selected', 'selected');
         colorOption.options[1].style.display = "";
@@ -79,6 +103,7 @@ designOption.addEventListener('change', () => {
     }else{
         colorOption.disabled = true;
     }
+    */
 })
 
 
