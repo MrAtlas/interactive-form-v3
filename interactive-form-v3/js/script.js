@@ -292,7 +292,7 @@ function validateActivities(selectActivity, activityHint, activitiesError){
         }
     }
     activityHint.style.display = 'block';
-    activitiesError.className = 'not-valid';
+    activitiesError.classList.add('not-valid');
     return false;
 }
 
