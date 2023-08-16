@@ -59,19 +59,23 @@ designOption.addEventListener('change', () => {
     colorOption.disabled = false;
 
     if(designOption.value === 'js puns'){
+        colorOption.options[1].setAttribute('selected', 'selected');
         colorOption.options[1].style.display = "";
         colorOption.options[2].style.display = "";
         colorOption.options[3].style.display = "";
         colorOption.options[4].style.display = "none";
         colorOption.options[5].style.display = "none";
         colorOption.options[6].style.display = "none";
+        
     }else if (designOption.value === 'heart js'){
+        colorOption.options[4].setAttribute('selected', 'selected');
         colorOption.options[1].style.display = "none";
         colorOption.options[2].style.display = "none";
         colorOption.options[3].style.display = "none";
         colorOption.options[4].style.display = "";
         colorOption.options[5].style.display = "";
         colorOption.options[6].style.display = "";
+        
     }else{
         colorOption.disabled = true;
     }
@@ -151,6 +155,7 @@ fieldsetActivity.addEventListener('change', (e) => {
 
 
 const paymentOption = document.getElementById('payment');
+paymentOption[1].setAttribute('selected', 'selected');
 
 const creditCardDiv = document.getElementById('credit-card');
 const paypalDiv = document.getElementById('paypal');
@@ -382,15 +387,36 @@ const creditCardLabelError = creditCardInput.parentNode;
 const zipcodeLabelError = zipcodeInput.parentNode;
 const cvvLabelError = cvvInput.parentNode;
 
-form.addEventListener('submit', (e) => {
-    e.preventDefault();
+/**
+ * Validate each required field using your validation functions
+ * Check if all required fields are valid
+ * Prevent form submission if any required field is invalid
+ * All required fields are valid, allow form submission
+ * The form will submit normally and load the page
+ */
 
+form.addEventListener('submit', (e) => {
+    //e.preventDefault();
+
+    const isNameValid = validateName(nameElement, nameHintElement, nameLabelError);
+    const isEmailValid = validateEmail(emailElement, emailHintElement, emailLabelError);
+    const isActivitiesValid = validateActivities(activities, activityHint, activitiesError);
+    const isCardValid = cardValidation(creditCardInput, creditCardHint, creditCardLabelError);
+    const isZipcodeValid = zipcodeValidation(zipcodeInput, zipcodeHint, zipcodeLabelError);
+    const isCvvValid = cvvValidation(cvvInput, cvvHint, cvvLabelError);
+
+    if (!isNameValid || !isEmailValid || !isActivitiesValid || !isCardValid || !isZipcodeValid || !isCvvValid) {
+        e.preventDefault();
+    } 
+
+    /*
     validateName(nameElement, nameHintElement, nameLabelError);
     validateEmail(emailElement, emailHintElement, emailLabelError);
     validateActivities(activities, activityHint, activitiesError);
     cardValidation(creditCardInput, creditCardHint, creditCardLabelError);
     zipcodeValidation(zipcodeInput, zipcodeHint, zipcodeLabelError);
     cvvValidation(cvvInput, cvvHint, cvvLabelError);
+    */
 })
 
 /**
