@@ -59,23 +59,19 @@ designOption.addEventListener('change', () => {
 
     colorOption.disabled = false;
 
+    const design = designOption.value;
+
     //New Way
 
     for(let i = 0; i < colorOption.options.length; i++){
-        if(designOption.value === 'js puns'){
-            if(colorOption.options[i].getAttribute('data-theme') === 'js puns'){
-                colorOption.options[i].style.display = "";
-                colorOption.options[i].setAttribute('selected', 'selected');
-            }else{
-                colorOption.options[i].style.display = "none";
-            }
-        }else if (designOption.value === 'heart js'){
-            if(colorOption.options[i].getAttribute('data-theme') === 'heart js'){
-                colorOption.options[i].style.display = "";
-                colorOption.options[i].setAttribute('selected', 'selected');
-            }else{
-                colorOption.options[i].style.display = "none";
-            }
+        const theme = color.options[i].getAttribute('data-theme');
+        
+        if (theme === design){
+            colorOption.options[i].style.display = '';
+            colorOption.options[i].selected = true;
+        }else{
+            colorOption.options[i].style.display = 'none';
+            colorOption.options[i].selected = false;
         }
     }
 
@@ -287,7 +283,8 @@ function validateActivities(selectActivity, activityHint, activitiesError){
     for (let i = 0; i < checkboxes.length; i++){
         if (checkboxes[i].checked){
             activityHint.style.display = 'none';
-            activitiesError.className = 'valid';
+            activitiesError.classList.add('valid');
+            activitiesError.classList.remove('not-valid');
             return true;
         }
     }
@@ -331,7 +328,6 @@ function cardValidation(creditCardInput, creditCardHint, creditCardLabelError){
         creditCardLabelError.className = 'not-valid';
         return false;
     }
-
     
 }
 
@@ -431,8 +427,10 @@ form.addEventListener('submit', (e) => {
     const isCvvValid = cvvValidation(cvvInput, cvvHint, cvvLabelError);
 
     if (!isNameValid || !isEmailValid || !isActivitiesValid || !isCardValid || !isZipcodeValid || !isCvvValid) {
-        e.preventDefault();
-    } 
+        if(paymentOption.value === 'credit-card'){
+            e.preventDefault();
+        }
+    }
 
     /*
     validateName(nameElement, nameHintElement, nameLabelError);
